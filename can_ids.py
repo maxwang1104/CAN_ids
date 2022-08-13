@@ -8,6 +8,9 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
 import queue
+
+import socketio
+
 pd.options.mode.chained_assignment = None
 
 def Preprocessing():
@@ -97,6 +100,10 @@ def CAN_ids():
     model_DoS = load('./models/Dos_DT.joblib')
     model_Spoofing = load('./models/Spoofing_DT.joblib')
 
+    # socketio
+    sio = socketio.Client()
+    sio.connect('http://localhost:5100')
+
     # read bus in loop
     while 1:
         msg_buffer = queue.Queue(maxsize=10)
@@ -139,7 +146,7 @@ def CAN_ids():
 
             json_msg = json.dumps(report_msg)
             print(json_msg)
-
+            sio.emit('ids', report_msg)
             # Send json_msg by socketIO
     
 

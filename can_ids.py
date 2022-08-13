@@ -155,8 +155,8 @@ def CAN_ids():
 
             json_msg = json.dumps(report_msg)
             print(json_msg)
-            sio.emit('ids', report_msg)
             # Send json_msg by socketIO
+            sio.emit('ids', json_msg)
     
 
 def main():

@@ -1,0 +1,8 @@
+BO_ 485 PSCMSteeringAngle: 8 K43_PSCM
+ SG_ SteeringWheelAngle : 15|16@0- (0.0625,0) [-2047|2047] "deg"  NEO
+
+BO_ 241 EBCMBrakePedalPosition: 6 K17_EBCM
+ SG_ BrakePedalPosition : 15|8@0+ (1,0) [0|255] ""  NEO
+
+BO_ 417 AcceleratorPedal: 7 XXX
+ SG_ AcceleratorPedal : 55|8@0+ (1,0) [0|0] ""  NEO

@@ -31,7 +31,7 @@ $sudo ip link set up vcan0
       b.  Then, open another terminal to replay log file
     
     ```jsx
-    	$canplayer -I "dos.log" vcan0
+    $canplayer -I "dos.log" vcan0
     ```
     
       c.  Get the json msg like below
@@ -53,7 +53,7 @@ $sudo ip link set up vcan0
       b.  Then, open another terminal to replay log file
     
     ```jsx
-    	$canplayer -I "Spoofing_steer.log" vcan0
+    $canplayer -I "Spoofing_steer.log" vcan0
     ```
     
       c.  Get the json msg like below

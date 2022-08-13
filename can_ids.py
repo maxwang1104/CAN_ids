@@ -10,6 +10,7 @@ from joblib import dump, load
 import queue
 
 import socketio
+import time
 
 pd.options.mode.chained_assignment = None
 
@@ -101,8 +102,16 @@ def CAN_ids():
     model_Spoofing = load('./models/Spoofing_DT.joblib')
 
     # socketio
+    host_url = 'http://localhost:5100'
     sio = socketio.Client()
-    sio.connect('http://localhost:5100')
+
+    while not sio.connected:
+        try:
+            sio.connect(host_url)
+        except:
+            print("Wait for socketio server")
+            time.sleep(2)
+    print("Connected to server!")        
 
     # read bus in loop
     while 1:

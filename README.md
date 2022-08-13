@@ -1,4 +1,3 @@
-# Readme
 
 An ids project cooperate with MIT x Cycraft x NYCU
 

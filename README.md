@@ -23,13 +23,13 @@ $sudo ip link set up vcan0
 
 1. Test whether can_ids can catch **“DoS” attack**
 
-    a. First, open a termonal to run python code
+    a. Open a terminal to run python code
     
     ```jsx
     $python can_ids.py
     ```
     
-    b.  Then, open another terminal to replay log file
+    b.  Open another terminal to replay log file
     
     ```jsx
     $canplayer -I "dos.log" vcan0
@@ -45,13 +45,13 @@ $sudo ip link set up vcan0
     
     (I assume msg can0 1E5#00FE7C0000000000 is Spoofing data)
     
-    a. First, open a termonal to run python code
+    a. Open a termonal to run python code
     
     ```jsx
     $python can_ids.py
     ```
     
-    b.  Then, open another terminal to replay log file
+    b.  Open another terminal to replay log file
     
     ```jsx
     $canplayer -I "Spoofing_steer.log" vcan0

@@ -43,7 +43,7 @@ $sudo ip link set up vcan0
     
 2. Test whether can_ids can catch **“Spoofing” attack** → **Cycraft given dataset of Spoofing is wierd**
     
-    (I assume msg can0 1E5#00FE7C0000000000 is Spoofing data)
+    (I assume msg can0 1E5#00E3010000000000 is Spoofing data)
     
     a. Open a termonal to run python code
     

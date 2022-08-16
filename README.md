@@ -41,9 +41,9 @@ $sudo ip link set up vcan0
     {'Timestamp': 1660372313.4541366, 'ID': 0, 'Classification': 'Malicious', 'Attack_type': 'DoS'}
     ```
     
-2. Test whether can_ids can catch **“Spoofing” attack** → **Cycraft given dataset of Spoofing is wierd**
+2. Test whether can_ids can catch **“Spoofing” attack** → 
     
-    (I assume msg can0 1E5#00FE7C0000000000 is Spoofing data)
+    (I assume msg can0 1E5#00E3010000000000 is Spoofing data)
     
     a. Open a termonal to run python code
     

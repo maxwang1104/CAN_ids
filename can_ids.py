@@ -127,7 +127,7 @@ def Testing():
         for i in range(len(df.index)):
             result.append(model_Spoofing.predict(np.array(df.loc[i][0:10]).reshape(1,-1)) == 1)
             if model_DoS.predict(np.array(df.loc[i][0:10]).reshape(1,-1)) == 1:
-                print("Error")
+                print("ids classification Error")
         # df[12] = result
         # df.to_csv("./Preprocessing_log2csv/DoS_normal.csv",index=False,header=False)
 
@@ -188,10 +188,10 @@ def CAN_ids():
     
 
 def main():
-    #Preprocessing()
-    #Training()
-    Testing()
-    #CAN_ids()
+    Preprocessing()
+    Training()
+    #Testing()
+    CAN_ids()
 
 
 if __name__ == '__main__':

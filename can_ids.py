@@ -2,7 +2,7 @@ import os
 import sys
 import pandas as pd
 import numpy as np
-import can
+#import can
 import json
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.model_selection import train_test_split
@@ -28,14 +28,17 @@ def Preprocessing():
             x = [int(lines[i][3][j:j+chunk_size], 16) for j in range(0, chunk, chunk_size)]
             del lines[i][3]
             lines[i] = lines[i] + x
-            
+            lines[i][0] = float(lines[i][0])
             if lines[i][2] != 0: # beingn
                 lines[i].append(int(0))
             else:                # malicious
                 lines[i].append(int(1))
+        for i in range(1,len(lines)):
+            lines[len(lines)-i][0] = lines[len(lines)-i][0] - lines[len(lines)-i-1][0]
         df = pd.DataFrame(lines)
         df.fillna(0, inplace=True)
-        del df[1]
+        df.drop([1], axis=1, inplace=True)
+        df.drop([0,len(df.index)-1], axis=0, inplace=True)
         df.to_csv("./Preprocessing_log2csv/dos.csv", index=False, header=False)
     
     with open("./logs/Spoofing_steer.log","r") as file:
@@ -51,15 +54,44 @@ def Preprocessing():
             x = [int(lines[i][3][j:j+chunk_size], 16) for j in range(0, chunk, chunk_size)]
             del lines[i][3]
             lines[i] = lines[i] + x
-            
-            if lines[i][2] == 485 and lines[i][3:] == [00,254,124,00,00,00,00,00]: # malicious
+            lines[i][0] = float(lines[i][0])
+            if lines[i][2] == 485 and lines[i][3:] == [00,227,1,00,00,00,00,00]: # malicious
                 lines[i].append(int(1))
             else:                # beingn
                 lines[i].append(int(0))
+        for i in range(1,len(lines)):
+            lines[len(lines) - i][0] = lines[len(lines) - i][0] - lines[len(lines) -i-1][0]
         df = pd.DataFrame(lines)
         df.fillna(0, inplace=True)
-        del df[1]
+        df.drop([1], axis=1, inplace=True)
+        df.drop([0,len(df.index)-1], axis=0, inplace=True)
         df.to_csv("./Preprocessing_log2csv/Spoofing_steer.csv", index=False, header=False)
+
+    with open("./logs/normal.log","r") as file:
+        lines = file.read().splitlines()
+        for i in range(len(lines)):
+            lines[i] = lines[i].replace(" ",",")
+            lines[i] = lines[i].replace("#",",")
+            lines[i] = lines[i].replace("(","")
+            lines[i] = lines[i].replace(")","")
+            lines[i] = lines[i].split(",")
+            lines[i][2] = int(lines[i][2], 16)
+            chunk, chunk_size = len(lines[i][3]), 2
+            x = [int(lines[i][3][j:j+chunk_size], 16) for j in range(0, chunk, chunk_size)]
+            del lines[i][3]
+            lines[i] = lines[i] + x
+            lines[i][0] = float(lines[i][0])
+            # if lines[i][2] == 485 and lines[i][3:] == [00,227,1,00,00,00,00,00]: # malicious
+            #     lines[i].append(int(1))
+            # else:                # beingn
+            #     lines[i].append(int(0))
+        for i in range(1,len(lines)):
+            lines[len(lines) - i][0] = lines[len(lines) - i][0] - lines[len(lines) -i-1][0]
+        df = pd.DataFrame(lines)
+        df.fillna(0, inplace=True)
+        df.drop([1], axis=1, inplace=True)
+        df.drop([0,len(df.index)-1], axis=0, inplace=True)
+        df.to_csv("./Preprocessing_log2csv/normal.csv", index=False, header=False)
 
 def Training():
     with open('./Preprocessing_log2csv/dos.csv', newline='') as csvfile:
@@ -90,6 +122,18 @@ def Training():
     print(model.score(X_test, y_test))
     dump(model, './models/Spoofing_DT.joblib')
 
+def Testing():
+    with open('./Preprocessing_log2csv/normal.csv', newline='') as csvfile:
+        df = pd.read_csv(csvfile,header=None)
+        model_DoS = load('./models/Dos_DT.joblib')
+        model_Spoofing = load('./models/Spoofing_DT.joblib')
+        result = []
+        for i in range(len(df.index)):
+            result.append(model_Spoofing.predict(np.array(df.loc[i][0:10]).reshape(1,-1)) == 1)
+            if model_DoS.predict(np.array(df.loc[i][0:10]).reshape(1,-1)) == 1:
+                print("Error")
+        # df[12] = result
+        # df.to_csv("./Preprocessing_log2csv/DoS_normal.csv",index=False,header=False)
 
     
 def CAN_ids():
@@ -159,22 +203,13 @@ def CAN_ids():
                     json_msg = json.dumps(report_msg)
                     print(json_msg)
                     sio.emit('ids',json_msg)
-                    last_timestamp = msg.timestamp
-
-
-            # json_msg = json.dumps(report_msg)
-            # print(json_msg)
-            # # Send json_msg by socketIO
-            # try:
-            #     sio.emit('ids', json_msg)
-            # except:
-            #     print("socketIO emit failed")
-    
+                    last_timestamp = msg.timestamp 
 
 def main():
     #Preprocessing()
     #Training()
-    CAN_ids()
+    Testing()
+    #CAN_ids()
 
 
 if __name__ == '__main__':
